@@ -1,13 +1,33 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, UploadFile, File
 from fastapi.responses import StreamingResponse
 import cv2
+import numpy as np
 
 app = FastAPI()
+latest_frame = None
 
-def generate_frames():
-    cap = cv2.VideoCapture("input.mp4")  # OR live frames from client later
+@app.post("/upload")
+async def upload(file: UploadFile = File(...)):
+    global latest_frame
+    data = await file.read()
+    latest_frame = cv2.imdecode(
+        np.frombuffer(data, np.uint8), cv2.IMREAD_COLOR
+    )
+    return {"status": "ok"}
+
+def stream():
+    global latest_frame
     while True:
-        success, frame = cap.read()
-        if not success:
-            break
-        _, buffer = cv2.imencode('.jpg', frame)
+        if latest_frame is None:
+            continue
+        _, buffer = cv2.imencode(".jpg", latest_frame)
+        yield (b"--frame\r\n"
+               b"Content-Type: image/jpeg\r\n\r\n" +
+               buffer.tobytes() + b"\r\n")
+
+@app.get("/video")
+def video():
+    return StreamingResponse(
+        stream(),
+        media_type="multipart/x-mixed-replace; boundary=frame"
+    )
