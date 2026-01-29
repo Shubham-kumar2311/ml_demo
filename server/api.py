@@ -1,7 +1,7 @@
 from fastapi import FastAPI, UploadFile, File
 import cv2
 import numpy as np
-from gaze_core import process_frame
+from server.app import process_frame
 
 app = FastAPI()
 
