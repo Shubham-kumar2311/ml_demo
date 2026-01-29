@@ -1,7 +1,7 @@
 import cv2
 import requests
 
-URL = "http://<EC2_PUBLIC_IP>:8000/gaze"
+URL = "http://13.232.18.180:8000/gaze"
 
 cap = cv2.VideoCapture(0)
 

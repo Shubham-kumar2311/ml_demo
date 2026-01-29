@@ -1,8 +1,11 @@
 import cv2
-import mediapipe as mp
 import math
 
-mp_face_mesh = mp.solutions.face_mesh
+from mediapipe.python.solutions import face_mesh
+
+mp_face_mesh = face_mesh
+
+
 face_mesh = mp_face_mesh.FaceMesh(refine_landmarks=True)
 
 BLINK_THRESHOLD = 0.35
