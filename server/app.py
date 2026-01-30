@@ -23,7 +23,9 @@ async def upload(file: UploadFile = File(...)):
     latest_frame = cv2.imdecode(
         np.frombuffer(data, np.uint8), cv2.IMREAD_COLOR
     )
+    print("Frame received:", latest_frame is not None)
     return {"ok": True}
+
 
 def mjpeg_stream():
     global latest_frame
